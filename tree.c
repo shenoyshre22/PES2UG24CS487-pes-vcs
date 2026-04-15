@@ -131,6 +131,33 @@ int tree_serialize(const Tree *tree, void **data_out, size_t *len_out) {
 // Returns 0 on success, -1 on error.
 int tree_from_index(ObjectID *id_out) {
     // TODO: Implement recursive tree building
+    // Helper: recursively write one level of the tree
+// entries: array of index entries with paths like "src/main.c", "README.md"
+// prefix: the directory we're currently building, e.g. "src/" (or "" for root)
+static int write_tree_level(IndexEntry *entries, int count, const char *prefix, ObjectID *id_out) {
+    Tree tree;
+    tree.count = 0;
+
+    int i = 0;
+    while (i < count) {
+        IndexEntry *e = &entries[i];
+        const char *rel = e->path + strlen(prefix);  // path relative to current dir
+
+        char *slash = strchr(rel, '/');
+
+        if (!slash) {
+            // It's a plain file in this directory
+            TreeEntry *te = &tree.entries[tree.count++];
+            te->mode = e->mode;
+            strncpy(te->name, rel, sizeof(te->name) - 1);
+            te->hash = e->id;
+            i++;
+        } else {
+            // It's a file inside a subdirectory — find all files with same subdir
+            size_t dir_name_len = slash - rel;
+            char subdir[256];
+            strncpy(subdir, rel, dir_name_len);
+            subdir[dir_name_len] = '\0';
     // (See Lab Appendix for logical steps)
     (void)id_out;
     return -1;
