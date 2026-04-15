@@ -151,7 +151,7 @@ int index_load(Index *index) {
                   &mode, hex, &mtime, &size, path) == 5) {
         IndexEntry *e = &index->entries[index->count];
         e->mode = mode;
-        hex_to_hash(hex, &e->id);
+        hex_to_hash(hex, &e->hash);
         e->mtime_sec = mtime;
         e->size = size;
         strncpy(e->path, path, sizeof(e->path) - 1);
@@ -188,7 +188,7 @@ int index_save(const Index *index) {
     if (!f) return -1;
     for (int i = 0; i < sorted.count; i++) {
         char hex[HASH_HEX_SIZE + 1];
-        hash_to_hex(&sorted.entries[i].id, hex);
+        hash_to_hex(&sorted.entries[i].hash, hex);
         fprintf(f, "%o %s %lu %lu %s\n",
                 sorted.entries[i].mode,
                 hex,
@@ -241,7 +241,7 @@ int index_add(Index *index, const char *path) {
         if (index->count >= MAX_INDEX_ENTRIES) return -1;
         existing = &index->entries[index->count++];
     }
-    existing->id = id;
+    existing->hash = id;
     existing->mode = (st.st_mode & S_IXUSR) ? 0100755 : 0100644;
     existing->mtime_sec = st.st_mtime;
     existing->size = st.st_size;
