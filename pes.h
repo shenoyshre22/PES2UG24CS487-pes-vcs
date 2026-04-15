@@ -13,6 +13,7 @@
 #include "tree.h"
 #include "index.h"
 #include "commit.h"
+#include "object.h"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -25,12 +26,7 @@
 #define HEAD_FILE ".pes/HEAD"
 
 // ─── Object Types ────────────────────────────────────────────────────────────
-
-typedef enum {
-    OBJ_BLOB,    // File content
-    OBJ_TREE,    // Directory listing
-    OBJ_COMMIT   // Snapshot with metadata
-} ObjectType;
+//already declared in object.h, but we need it here for the commit_create function declaration
 
 // ─── Object Identifier ──────────────────────────────────────────────────────
 //declared in a separate header to avoid circular dependencies between object.h, tree.h, commit.h, index.h
