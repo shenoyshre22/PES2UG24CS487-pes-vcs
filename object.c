@@ -199,7 +199,7 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     }
     fclose(f);
 
-    //  to verify the integrity by rehashing and comparing
+    //  to verify integrity by recomputing the hash of the file contents
     ObjectID computed;
     compute_hash(buf, file_len, &computed);
     if (memcmp(computed.hash, id->hash, HASH_SIZE) != 0) {
