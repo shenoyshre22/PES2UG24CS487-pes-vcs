@@ -217,6 +217,13 @@ int index_add(Index *index, const char *path) {
     // (See Lab Appendix for logical steps)
     FILE *f = fopen(path, "rb");
     if (!f) { fprintf(stderr, "error: cannot open '%s'\n", path); return -1; }
+    fseek(f, 0, SEEK_END);
+    size_t file_len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    void *buf = malloc(file_len);
+    if (!buf) { fclose(f); return -1; }
+    fread(buf, 1, file_len, f);
+    fclose(f);
 
     (void)index; (void)path;
     return -1;
