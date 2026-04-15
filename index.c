@@ -240,6 +240,13 @@ int index_add(Index *index, const char *path) {
         if (index->count >= MAX_INDEX_ENTRIES) return -1;
         existing = &index->entries[index->count++];
     }
+    existing->id = id;
+    existing->mode = (st.st_mode & S_IXUSR) ? 0100755 : 0100644;
+    existing->mtime_sec = st.st_mtime;
+    existing->size = st.st_size;
+    strncpy(existing->path, path, sizeof(existing->path) - 1);
+
+    return index_save(index);
 
     (void)index; (void)path;
     return -1;
