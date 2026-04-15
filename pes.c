@@ -57,6 +57,15 @@ void cmd_commit(int argc, char *argv[]) {
         fprintf(stderr, "error: commit requires a message (-m \"message\")\n");
         return;
     }
+     ObjectID id;
+    if (commit_create(message, &id) == 0) {
+        char hex[HASH_HEX_SIZE + 1];
+        hash_to_hex(&id, hex);
+        printf("Committed: %.12s... %s\n", hex, message);
+    } else {
+        fprintf(stderr, "error: commit failed\n");
+    }
+}
 
 
 
