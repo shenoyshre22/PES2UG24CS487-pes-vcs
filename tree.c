@@ -161,6 +161,12 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
              // Build full prefix for that subdir
             char sub_prefix[512];
             snprintf(sub_prefix, sizeof(sub_prefix), "%s%s/", prefix, subdir);
+            // Collect all entries belonging to this subdir
+            int j = i;
+            while (j < count && strncmp(entries[j].path, sub_prefix, strlen(sub_prefix)) == 0) {
+                j++;
+            }
+
 
     // (See Lab Appendix for logical steps)
     (void)id_out;
