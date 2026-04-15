@@ -16,6 +16,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <openssl/sha.h>
+#include <errno.h>
+#include <openssl/evp.h>
 
 // ─── PROVIDED ────────────────────────────────────────────────────────────────
 
@@ -37,10 +39,32 @@ int hex_to_hash(const char *hex, ObjectID *id_out) {
 }
 
 void compute_hash(const void *data, size_t len, ObjectID *id_out) {
-    SHA256_CTX ctx;
-    SHA256_Init(&ctx);
-    SHA256_Update(&ctx, data, len);
-    SHA256_Final(id_out->hash, &ctx);
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) {
+        fprintf(stderr, "Error: Failed to create EVP_MD_CTX\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (EVP_DigestInit_ex(ctx, EVP_sha256(), NULL) != 1) {
+        fprintf(stderr, "Error: Failed to initialize digest\n");
+        EVP_MD_CTX_free(ctx);
+        exit(EXIT_FAILURE);
+    }
+
+    if (EVP_DigestUpdate(ctx, data, len) != 1) {
+        fprintf(stderr, "Error: Failed to update digest\n");
+        EVP_MD_CTX_free(ctx);
+        exit(EXIT_FAILURE);
+    }
+
+    unsigned int hash_len;
+    if (EVP_DigestFinal_ex(ctx, id_out->hash, &hash_len) != 1) {
+        fprintf(stderr, "Error: Failed to finalize digest\n");
+        EVP_MD_CTX_free(ctx);
+        exit(EXIT_FAILURE);
+    }
+
+    EVP_MD_CTX_free(ctx);
 }
 
 // Get the filesystem path where an object should be stored.
