@@ -198,7 +198,6 @@ int index_save(const Index *index) {
     fflush(f);
     fsync(fileno(f));
     fclose(f);
-
     return rename(tmp_path, INDEX_FILE);
     (void)index;
     return -1;
