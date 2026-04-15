@@ -201,6 +201,13 @@ int commit_create(const char *message, ObjectID *commit_id_out) {
         fprintf(stderr, "error: nothing staged\n");
         return -1;
     }
+    Commit c;
+    memset(&c, 0, sizeof(c));
+    c.tree = tree_id;
+    c.timestamp = (uint64_t)time(NULL);
+    strncpy(c.author, pes_author(), sizeof(c.author) - 1);
+    strncpy(c.message, message, sizeof(c.message) - 1);
+
 
 
 
