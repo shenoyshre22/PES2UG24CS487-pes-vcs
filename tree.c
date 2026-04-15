@@ -158,6 +158,10 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
             char subdir[256];
             strncpy(subdir, rel, dir_name_len);
             subdir[dir_name_len] = '\0';
+             // Build full prefix for that subdir
+            char sub_prefix[512];
+            snprintf(sub_prefix, sizeof(sub_prefix), "%s%s/", prefix, subdir);
+
     // (See Lab Appendix for logical steps)
     (void)id_out;
     return -1;
