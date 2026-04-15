@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "tree.h"
+#include "index.h"
+#include "commit.h"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
