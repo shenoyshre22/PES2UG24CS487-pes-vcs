@@ -185,6 +185,17 @@ int index_save(const Index *index) {
     char tmp_path[] = INDEX_FILE ".tmp";
     FILE *f = fopen(tmp_path, "w");
     if (!f) return -1;
+    for (int i = 0; i < sorted.count; i++) {
+        char hex[HASH_HEX_SIZE + 1];
+        hash_to_hex(&sorted.entries[i].id, hex);
+        fprintf(f, "%o %s %lu %lu %s\n",
+                sorted.entries[i].mode,
+                hex,
+                sorted.entries[i].mtime_sec,
+                sorted.entries[i].size,
+                sorted.entries[i].path);
+    }
+
 
 
 
