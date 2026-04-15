@@ -137,6 +137,15 @@ int index_status(const Index *index) {
 int index_load(Index *index) {
     // TODO: Implement index loading
     // (See Lab Appendix for logical steps)
+    index->count = 0;
+    FILE *f = fopen(INDEX_FILE, "r");
+    if (!f) return 0;  // No index yet = empty, not an error
+
+    char hex[HASH_HEX_SIZE + 1];
+    uint32_t mode;
+    uint64_t mtime;
+    uint64_t size;
+    char path[512];
     (void)index;
     return -1;
 }
