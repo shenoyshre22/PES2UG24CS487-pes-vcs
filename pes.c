@@ -30,6 +30,35 @@ void cmd_branch(int argc, char *argv[]) {
         fprintf(stderr, "Usage:\n  pes branch\n  pes branch <name>\n  pes branch -d <name>\n");
     }
 }
+void cmd_init(void) {
+    mkdir(".pes", 0755);
+    mkdir(".pes/objects", 0755);
+    mkdir(".pes/refs", 0755);
+    mkdir(".pes/refs/heads", 0755);
+
+    FILE *f = fopen(".pes/HEAD", "w");
+    if (f) { fprintf(f, "ref: refs/heads/main\n"); fclose(f); }
+
+    printf("Initialized empty PES repository in .pes/\n");
+}
+
+void cmd_add(int argc, char *argv[]) {
+    if (argc < 3) { fprintf(stderr, "Usage: pes add <file>...\n"); return; }
+    Index index;
+    index_load(&index);
+    for (int i = 2; i < argc; i++) {
+        if (index_add(&index, argv[i]) == 0)
+            printf("Added: %s\n", argv[i]);
+        else
+            fprintf(stderr, "error: could not add '%s'\n", argv[i]);
+    }
+}
+
+void cmd_status(void) {
+    Index index;
+    index_load(&index);
+    index_status(&index);
+}
 
 // Usage: pes checkout <branch_or_commit>
 void cmd_checkout(int argc, char *argv[]) {
