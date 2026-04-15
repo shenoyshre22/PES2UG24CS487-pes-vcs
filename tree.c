@@ -166,6 +166,10 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
             while (j < count && strncmp(entries[j].path, sub_prefix, strlen(sub_prefix)) == 0) {
                 j++;
             }
+            // Recursively write the subtree for this subdir and get its ObjectID
+            ObjectID subtree_id;
+            if (write_tree_level(entries + i, j - i, sub_prefix, &subtree_id) != 0)
+                return -1;
 
 
     // (See Lab Appendix for logical steps)
