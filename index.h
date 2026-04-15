@@ -8,7 +8,6 @@
 #define INDEX_H
 
 #include "pes.h"
-#include "object.h"
 
 #define MAX_INDEX_ENTRIES 10000
 
@@ -43,16 +42,15 @@ IndexEntry* index_find(Index *index, const char *path);
 
 // Print the status of the working directory compared to the index and HEAD.
 // Output format:
-//   Staged changes (index vs HEAD):
-//     new file:   <path>
-//     modified:   <path>
+//   Staged changes:
+//     staged:     <path>
 //
-//   Unstaged changes (working dir vs index):
+//   Unstaged changes:
 //     modified:   <path>
 //     deleted:    <path>
 //
 //   Untracked files:
-//     <path>
+//     untracked:  <path>
 int index_status(const Index *index);
 
 #endif // INDEX_H
