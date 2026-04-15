@@ -150,6 +150,8 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     if (dir_fd >= 0) { fsync(dir_fd); close(dir_fd); }
 
     return 0;
+    (void)type; (void)data; (void)len; (void)id_out;
+    return -1;
 }
 
 // Read an object from the store.
