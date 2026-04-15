@@ -5,8 +5,8 @@
 
 #ifndef COMMIT_H
 #define COMMIT_H
+
 #include "pes.h"
-#include "object.h"
 
 typedef struct {
     ObjectID tree;          // Root tree hash (the project snapshot)
