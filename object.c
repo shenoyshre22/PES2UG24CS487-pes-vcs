@@ -216,7 +216,7 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     if (hdr_len >= sizeof(header)) { free(buf); return -1; }
     memcpy(header, buf, hdr_len);
 
-    // Parse type
+    // parse the type string from the header
     if      (strncmp(header, "blob ",   5) == 0) *type_out = OBJ_BLOB;
     else if (strncmp(header, "tree ",   5) == 0) *type_out = OBJ_TREE;
     else if (strncmp(header, "commit ", 7) == 0) *type_out = OBJ_COMMIT;
