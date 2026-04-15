@@ -33,10 +33,7 @@ typedef enum {
 } ObjectType;
 
 // ─── Object Identifier ──────────────────────────────────────────────────────
-
-typedef struct {
-    uint8_t hash[HASH_SIZE];
-} ObjectID;
+//declared in a separate header to avoid circular dependencies between object.h, tree.h, commit.h, index.h
 
 // ─── Utility Functions (implement in object.c) ─────────────────────────────
 
