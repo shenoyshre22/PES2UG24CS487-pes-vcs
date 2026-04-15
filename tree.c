@@ -149,7 +149,7 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
             TreeEntry *te = &tree.entries[tree.count++];
             te->mode = e->mode;
             strncpy(te->name, rel, sizeof(te->name) - 1);
-            te->hash = e->id;
+            te->hash = e->hash;
             i++;
         } else {
             // It's a file inside a subdirectory — find all files with same subdir
