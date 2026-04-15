@@ -195,14 +195,11 @@ int index_save(const Index *index) {
                 sorted.entries[i].size,
                 sorted.entries[i].path);
     }
+    fflush(f);
+    fsync(fileno(f));
+    fclose(f);
 
-
-
-
-
-
-
-
+    return rename(tmp_path, INDEX_FILE);
     (void)index;
     return -1;
 }
