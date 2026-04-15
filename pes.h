@@ -1,7 +1,6 @@
 // pes.h — Core data structures and constants for PES-VCS
 //
-// This file is PROVIDED. Do not modify unless adding helper declarations
-// for your own utility functions.
+// This file is PROVIDED. Do not modify.
 
 #ifndef PES_H
 #define PES_H
@@ -10,10 +9,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "tree.h"
-#include "index.h"
-#include "commit.h"
-#include "object.h"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -26,10 +21,18 @@
 #define HEAD_FILE ".pes/HEAD"
 
 // ─── Object Types ────────────────────────────────────────────────────────────
-//already declared in object.h, but we need it here for the commit_create function declaration
+
+typedef enum {
+    OBJ_BLOB,    // File content
+    OBJ_TREE,    // Directory listing
+    OBJ_COMMIT   // Snapshot with metadata
+} ObjectType;
 
 // ─── Object Identifier ──────────────────────────────────────────────────────
-//declared in a separate header to avoid circular dependencies between object.h, tree.h, commit.h, index.h
+
+typedef struct {
+    uint8_t hash[HASH_SIZE];
+} ObjectID;
 
 // ─── Utility Functions (implement in object.c) ─────────────────────────────
 
