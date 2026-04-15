@@ -179,7 +179,61 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
 // The caller is responsible for calling free(*data_out).
 // Returns 0 on success, -1 on error (file not found, corrupt, etc.).
 int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_t *len_out) {
-    // TODO: Implement
+    //  to get the path
+    char path[512];
+    object_path(id, path, sizeof(path));
+
+    //  helps to open and read the entire file
+    FILE *f = fopen(path, "rb");
+    if (!f) return -1;
+
+    fseek(f, 0, SEEK_END);
+    size_t file_len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    uint8_t *buf = malloc(file_len);
+    if (!buf) { fclose(f); return -1; }
+
+    if (fread(buf, 1, file_len, f) != file_len) {
+        fclose(f); free(buf); return -1;
+    }
+    fclose(f);
+
+    //  to verify the integrity by rehashing and comparing
+    ObjectID computed;
+    compute_hash(buf, file_len, &computed);
+    if (memcmp(computed.hash, id->hash, HASH_SIZE) != 0) {
+        free(buf); return -1;  // when corruption is detected, we treat it as "not found"
+    }
+
+    // Parse the header — find the \0 separating header from data
+    uint8_t *null_byte = memchr(buf, '\0', file_len);
+    if (!null_byte) { free(buf); return -1; }
+
+    // Header is everything before \0, e.g. "blob 16"
+    char header[64] = {0};
+    size_t hdr_len = null_byte - buf;
+    if (hdr_len >= sizeof(header)) { free(buf); return -1; }
+    memcpy(header, buf, hdr_len);
+
+    // Parse type
+    if      (strncmp(header, "blob ",   5) == 0) *type_out = OBJ_BLOB;
+    else if (strncmp(header, "tree ",   5) == 0) *type_out = OBJ_TREE;
+    else if (strncmp(header, "commit ", 7) == 0) *type_out = OBJ_COMMIT;
+    else { free(buf); return -1; }
+
+    //  Extract the data portion
+    uint8_t *data_start = null_byte + 1;
+    size_t data_len = file_len - hdr_len - 1;
+
+    *data_out = malloc(data_len + 1);  // +1 for safety null
+    if (!*data_out) { free(buf); return -1; }
+    memcpy(*data_out, data_start, data_len);
+    ((uint8_t*)*data_out)[data_len] = '\0';
+    *len_out = data_len;
+
+    free(buf);
+    return 0;
     (void)id; (void)type_out; (void)data_out; (void)len_out;
     return -1;
 }
