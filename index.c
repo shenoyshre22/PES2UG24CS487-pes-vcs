@@ -224,6 +224,12 @@ int index_add(Index *index, const char *path) {
     if (!buf) { fclose(f); return -1; }
     fread(buf, 1, file_len, f);
     fclose(f);
+    // Store as blob
+    ObjectID id;
+    if (object_write(OBJ_BLOB, buf, file_len, &id) != 0) {
+        free(buf); return -1;
+    }
+    free(buf);
 
     (void)index; (void)path;
     return -1;
