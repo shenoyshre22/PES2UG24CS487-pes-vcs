@@ -181,6 +181,10 @@ int index_save(const Index *index) {
     // (See Lab Appendix for logical steps)
     Index sorted = *index;
     qsort(sorted.entries, sorted.count, sizeof(IndexEntry), compare_index_entries);
+    // Write to temp file
+    char tmp_path[] = INDEX_FILE ".tmp";
+    FILE *f = fopen(tmp_path, "w");
+    if (!f) return -1;
 
 
 
