@@ -179,6 +179,14 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
             i = j;  // skip all processed subdir entries
         }
     }
+    // Serialize and write this level's tree
+    void *tree_data;
+    size_t tree_len;
+    if (tree_serialize(&tree, &tree_data, &tree_len) != 0) return -1;
+    int rc = object_write(OBJ_TREE, tree_data, tree_len, id_out);
+    free(tree_data);
+    return rc;
+}
 
 
     // (See Lab Appendix for logical steps)
