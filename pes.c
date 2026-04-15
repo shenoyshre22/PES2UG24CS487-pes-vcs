@@ -59,7 +59,20 @@ void cmd_status(void) {
     index_load(&index);
     index_status(&index);
 }
+static void log_callback(const ObjectID *id, const Commit *c, void *ctx) {
+    (void)ctx;
+    char hex[HASH_HEX_SIZE + 1];
+    hash_to_hex(id, hex);
+    printf("commit %s\n", hex);
+    printf("Author: %s\n", c->author);
+    printf("Date:   %lu\n", c->timestamp);
+    printf("\n    %s\n\n", c->message);
+}
 
+void cmd_log(void) {
+    if (commit_walk(log_callback, NULL) != 0)
+        fprintf(stderr, "error: no commits yet\n");
+}
 // Usage: pes checkout <branch_or_commit>
 void cmd_checkout(int argc, char *argv[]) {
     if (argc < 3) {
