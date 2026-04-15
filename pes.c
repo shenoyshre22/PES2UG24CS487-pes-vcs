@@ -53,6 +53,11 @@ void cmd_commit(int argc, char *argv[]) {
             break;
         }
     }
+    if (!message) {
+        fprintf(stderr, "error: commit requires a message (-m \"message\")\n");
+        return;
+    }
+
 
 
 
