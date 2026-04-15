@@ -18,6 +18,7 @@
 #include <openssl/sha.h>
 #include <errno.h>
 #include <openssl/evp.h>
+#include "object.h"
 
 // ─── PROVIDED ────────────────────────────────────────────────────────────────
 
