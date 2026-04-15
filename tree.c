@@ -190,9 +190,7 @@ int tree_from_index(ObjectID *id_out) {
     if (index_load(&index) != 0) return -1;
     if (index.count == 0) return -1;  // Nothing staged
     return write_tree_level(index.entries, index.count, "", id_out);
-}
-
-
     // (See Lab Appendix for logical steps)
     (void)id_out;
     return -1;
+}
