@@ -146,6 +146,21 @@ int index_load(Index *index) {
     uint64_t mtime;
     uint64_t size;
     char path[512];
+    while (fscanf(f, "%o %64s %lu %lu %511s\n",
+                  &mode, hex, &mtime, &size, path) == 5) {
+        IndexEntry *e = &index->entries[index->count];
+        e->mode = mode;
+        hex_to_hash(hex, &e->id);
+        e->mtime_sec = mtime;
+        e->size = size;
+        strncpy(e->path, path, sizeof(e->path) - 1);
+        index->count++;
+        if (index->count >= MAX_INDEX_ENTRIES) break;
+    }
+
+
+
+
     (void)index;
     return -1;
 }
