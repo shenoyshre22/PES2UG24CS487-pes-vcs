@@ -92,9 +92,64 @@ int object_exists(const ObjectID *id) {
 //
 // Returns 0 on success, -1 on error.
 int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out) {
-    // TODO: Implement
-    (void)type; (void)data; (void)len; (void)id_out;
-    return -1;
+    // figure out the type string
+    const char *type_str;
+    if      (type == OBJ_BLOB)   type_str = "blob";
+    else if (type == OBJ_TREE)   type_str = "tree";
+    else if (type == OBJ_COMMIT) type_str = "commit";
+    else return -1;
+
+    // to build the header: "blob 42\0"
+    char header[64];
+    int header_len = snprintf(header, sizeof(header), "%s %zu", type_str, len) + 1;
+    // +1 to include the null byte that snprintf writes
+
+    //  Build the full object = header + data
+    size_t full_len = header_len + len;
+    uint8_t *full = malloc(full_len);
+    if (!full) return -1;
+    memcpy(full, header, header_len);
+    memcpy(full + header_len, data, len);
+
+    // Hash the full object
+    compute_hash(full, full_len, id_out);
+
+    //  Deduplication — already exists? Done.
+    if (object_exists(id_out)) { free(full); return 0; }
+
+    //  Build the shard dir path and create it
+    char path[512];
+    object_path(id_out, path, sizeof(path));
+    char dir[512];
+    snprintf(dir, sizeof(dir), "%s", path);
+    // we cut at the last slash
+    char *slash = strrchr(dir, '/');
+    if (!slash) { free(full); return -1; }
+    *slash = '\0';  // now dir = ".pes/objects/ab"
+    mkdir(dir, 0755);  // OK if it already exists
+
+    //  Write to a temp file in the shard directory
+    char tmp_path[512];
+    snprintf(tmp_path, sizeof(tmp_path), "%s/tmp_XXXXXX", dir);
+    int fd = mkstemp(tmp_path);
+    if (fd < 0) { free(full); return -1; }
+
+    if (write(fd, full, full_len) != (ssize_t)full_len) {
+        close(fd); free(full); return -1;
+    }
+
+    //  fsync + close + atomic rename
+    fsync(fd);
+    close(fd);
+    free(full);
+
+    if (rename(tmp_path, path) != 0) return -1;
+
+    // fsync the directory to persist the rename
+    int dir_fd = open(dir, O_RDONLY);
+    if (dir_fd >= 0) { fsync(dir_fd); close(dir_fd); }
+
+    return 0;
 }
 
 // Read an object from the store.
