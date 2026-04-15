@@ -157,10 +157,8 @@ int index_load(Index *index) {
         index->count++;
         if (index->count >= MAX_INDEX_ENTRIES) break;
     }
-
-
-
-
+    fclose(f);
+    return 0;
     (void)index;
     return -1;
 }
