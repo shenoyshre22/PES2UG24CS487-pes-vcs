@@ -44,6 +44,17 @@ void cmd_checkout(int argc, char *argv[]) {
 }
 
 // ─── PROVIDED: Command dispatch ─────────────────────────────────────────────
+void cmd_commit(int argc, char *argv[]) {
+    // Parse -m flag
+    const char *message = NULL;
+    for (int i = 2; i < argc - 1; i++) {
+        if (strcmp(argv[i], "-m") == 0) {
+            message = argv[i + 1];
+            break;
+        }
+    }
+
+
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
