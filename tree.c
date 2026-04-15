@@ -170,6 +170,15 @@ static int write_tree_level(IndexEntry *entries, int count, const char *prefix, 
             ObjectID subtree_id;
             if (write_tree_level(entries + i, j - i, sub_prefix, &subtree_id) != 0)
                 return -1;
+            // Add subdir as a tree entry
+            TreeEntry *te = &tree.entries[tree.count++];
+            te->mode = 0040000;
+            strncpy(te->name, subdir, sizeof(te->name) - 1);
+            te->hash = subtree_id;
+
+            i = j;  // skip all processed subdir entries
+        }
+    }
 
 
     // (See Lab Appendix for logical steps)
