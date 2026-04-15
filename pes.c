@@ -1,6 +1,9 @@
 #include "pes.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "commit.h"
+#include "index.h"
+#include "tree.h"
 
 // ─── PROVIDED: Phase 5 Command Wrappers ─────────────────────────────────────
 
