@@ -8,7 +8,6 @@
 #define TREE_H
 
 #include "pes.h"
-#include "object.h"
 
 #define MAX_TREE_ENTRIES 1024
 
