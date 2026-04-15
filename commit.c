@@ -207,6 +207,13 @@ int commit_create(const char *message, ObjectID *commit_id_out) {
     c.timestamp = (uint64_t)time(NULL);
     strncpy(c.author, pes_author(), sizeof(c.author) - 1);
     strncpy(c.message, message, sizeof(c.message) - 1);
+    ObjectID parent_id;
+    if (head_read(&parent_id) == 0) {
+        c.has_parent = 1;
+        c.parent = parent_id;
+    } else {
+        c.has_parent = 0;  // First commit — no parent
+    }
 
 
 
