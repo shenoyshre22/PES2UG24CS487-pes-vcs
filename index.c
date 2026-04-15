@@ -230,6 +230,16 @@ int index_add(Index *index, const char *path) {
         free(buf); return -1;
     }
     free(buf);
+    // Get file metadata
+    struct stat st;
+    if (lstat(path, &st) != 0) return -1;
+
+    // Update or add index entry
+    IndexEntry *existing = index_find(index, path);
+    if (!existing) {
+        if (index->count >= MAX_INDEX_ENTRIES) return -1;
+        existing = &index->entries[index->count++];
+    }
 
     (void)index; (void)path;
     return -1;
