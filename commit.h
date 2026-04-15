@@ -5,7 +5,6 @@
 
 #ifndef COMMIT_H
 #define COMMIT_H
-
 #include "pes.h"
 
 typedef struct {
