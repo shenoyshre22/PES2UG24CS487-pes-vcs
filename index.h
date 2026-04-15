@@ -8,6 +8,7 @@
 #define INDEX_H
 
 #include "pes.h"
+#include "object.h"
 
 #define MAX_INDEX_ENTRIES 10000
 
