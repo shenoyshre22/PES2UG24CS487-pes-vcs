@@ -4,5 +4,10 @@
 typedef struct {
     unsigned char hash[32];  // SHA-256 = 32 bytes
 } ObjectID;
-int object_write(int type, const void *data, size_t len, ObjectID *id_out);
+typedef enum {
+    OBJ_BLOB,
+    OBJ_TREE,
+    OBJ_COMMIT
+} ObjectType;
+int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out);
 #endif
