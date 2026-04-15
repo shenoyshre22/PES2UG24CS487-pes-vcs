@@ -1,4 +1,6 @@
 #include "pes.h"
+#include <string.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "commit.h"
